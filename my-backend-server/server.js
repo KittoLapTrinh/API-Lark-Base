@@ -142,7 +142,6 @@ app.post("/addRecord", async (req, res) => {
       },
     });
     const message = `Bạn đã tạo bản ghi với id: ${id}`;
-    
     await sendMessage(message);
     res.json({ message: "Record added successfully", data: response.data });
   } catch (error) {
@@ -152,30 +151,38 @@ app.post("/addRecord", async (req, res) => {
 
 // API cập nhật bản ghi
 app.put("/records/:record_id", async (req, res) => {
-  const record_id = req.params.record_id;
-  const updatedData = {
-    fields: {
-      id: req.body.id,
-      companyName: req.body.companyName,
-      address: req.body.address,
-      phone: req.body.phone,
-      gmail: req.body.gmail,
-    },
-  };
-
-  const url = `https://open.larksuite.com/open-apis/bitable/v1/apps/ZOajbULYSaHIMAsYuHKlAt4Jgkc/tables/tbl6VJkABgGjEMX2/records/${record_id}`;
 
   try {
+
+    const record_id = req.params.record_id;
+    console.log(record_id);
+    
+    const updatedData = {
+      fields: {
+        id: req.body.id,
+        companyName: req.body.companyName,
+        address: req.body.address,
+        phone: req.body.phone,
+        gmail: req.body.gmail,
+      },
+    };
+    console.log(updatedData);
+    
+  
+    const url = `https://open.larksuite.com/open-apis/bitable/v1/apps/ZOajbULYSaHIMAsYuHKlAt4Jgkc/tables/tbl6VJkABgGjEMX2/records/${record_id}`;
+  
     const response = await axios.put(url, updatedData, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
       },
     });
-
+    const message = `Bạn đã cập nhật thành công với bản ghi record_id: ${record_id}`;
+    await sendMessage(message);
     res.json({ message: "Cập nhật bản ghi thành công", data: response.data });
   } catch (error) {
-    res.status(500).json({ message: "Lỗi khi cập nhật bản ghi", error: error.message });
+    console.error("Error updating data:", error);
+    res.status(500).send({ message: "Error updating data" });
   }
 });
 
